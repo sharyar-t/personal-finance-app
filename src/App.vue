@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { Button } from '@/components/ui/button'
 import HelloWorld from './components/HelloWorld.vue'
 </script>
 
@@ -16,6 +17,8 @@ import HelloWorld from './components/HelloWorld.vue'
       </nav>
     </div>
   </header>
+
+  <Button>Click me</Button>
 
   <RouterView />
 </template>
