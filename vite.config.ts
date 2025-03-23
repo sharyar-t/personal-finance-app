@@ -4,6 +4,7 @@ import autoprefixer from 'autoprefixer'
 import tailwind from 'tailwindcss'
 import { defineConfig } from 'vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import AutoImport from 'unplugin-auto-import/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,6 +16,31 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
+    AutoImport({
+      imports: [
+        'vue',
+        'vue-router',
+        'pinia',
+        // custom
+        {
+          'vue-router': ['createRouter', 'createWebHistory']
+        },
+        // types
+        {
+          from: 'vue',
+          imports: ['Ref'],
+          type: true,
+        }
+      ],
+
+      eslintrc: {
+        enabled: true,
+      },
+
+      vueTemplate: true,
+      dumpUnimportItems: false,
+      dts: true
+    }),
   ],
   resolve: {
     alias: {
