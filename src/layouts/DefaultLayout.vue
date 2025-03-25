@@ -6,7 +6,7 @@ import AppSidebar from '@/components/AppSidebar.vue'
 <template>
   <SidebarProvider>
     <AppSidebar />
-    <SidebarInset class="px-10 py-8">
+    <SidebarInset class="px-4 py-6 md:px-10 md:py-8">
       <RouterView />
     </SidebarInset>
   </SidebarProvider>

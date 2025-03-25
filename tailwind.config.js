@@ -4,12 +4,33 @@ export default {
   content: ['./index.html', './src/**/*.{ts,js,vue}'],
   theme: {
     extend: {
+      fontSize: {
+        'preset-1': [
+          '1.5rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '0',
+            fontWeight: '700',
+          },
+        ],
+        'preset-4': [
+          '0.875rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0',
+            fontWeight: '400',
+          },
+        ],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        grey: {
+          900: '#201F24',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
