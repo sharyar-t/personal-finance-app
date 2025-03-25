@@ -13,8 +13,32 @@ export default {
             fontWeight: '700',
           },
         ],
+        'preset-2': [
+          '1.25rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '0',
+            fontWeight: '700',
+          },
+        ],
         'preset-4': [
           '0.875rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0',
+            fontWeight: '400',
+          },
+        ],
+        'preset-4-bold': [
+          '0.875rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0',
+            fontWeight: '700',
+          },
+        ],
+        'preset-5': [
+          '0.75rem',
           {
             lineHeight: '150%',
             letterSpacing: '0',
@@ -28,7 +52,15 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        green: '#277C78',
+        cyan: '#82C9D7',
+        navy: '#626070',
+        yellow: '#F2CDAC',
+        beige: {
+          100: '#F8F4F0',
+        },
         grey: {
+          500: '#696868',
           900: '#201F24',
         },
         background: 'hsl(var(--background))',
