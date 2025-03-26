@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import OverviewCard from '@/components/overview/OverviewCard.vue'
 import PotsCard from '@/components/overview/PotsCard.vue'
+import TransactionsCard from '@/components/overview/TransactionsCard.vue'
 </script>
 
 <template>
@@ -16,6 +17,9 @@ import PotsCard from '@/components/overview/PotsCard.vue'
 
     <div class="mb-8">
       <PotsCard />
+    </div>
+    <div class="mb-8">
+      <TransactionsCard />
     </div>
   </main>
 </template>
