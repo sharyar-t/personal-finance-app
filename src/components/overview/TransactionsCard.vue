@@ -9,13 +9,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
   <Card class="border-none shadow-none">
     <CardHeader class="flex-row items-center justify-between">
       <h2 class="text-preset-2">Transactions</h2>
-      <router-link
+      <RouterLink
         :to="{ name: 'Transactions' }"
         class="flex items-center gap-3 text-preset-4 text-grey-500"
       >
         View All
         <PhCaretRight weight="fill" />
-      </router-link>
+      </RouterLink>
     </CardHeader>
     <CardContent>
       <div class="flex items-center">
