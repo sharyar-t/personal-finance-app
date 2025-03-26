@@ -2,6 +2,7 @@
 import OverviewCard from '@/components/overview/OverviewCard.vue'
 import PotsCard from '@/components/overview/PotsCard.vue'
 import TransactionsCard from '@/components/overview/TransactionsCard.vue'
+import BudgetsCard from '@/components/overview/BudgetsCard.vue'
 </script>
 
 <template>
@@ -15,11 +16,14 @@ import TransactionsCard from '@/components/overview/TransactionsCard.vue'
       <OverviewCard title="$1,700.50" subtitle="Expenses" />
     </div>
 
-    <div class="mb-8">
-      <PotsCard />
-    </div>
-    <div class="mb-8">
-      <TransactionsCard />
+    <div class="flex flex-col gap-3 md:flex-row md:gap-6">
+      <div class="flex basis-3/5 flex-col gap-3 md:gap-6">
+        <PotsCard />
+        <TransactionsCard />
+      </div>
+      <div class="flex basis-2/5 flex-col gap-3 md:gap-6">
+        <BudgetsCard />
+      </div>
     </div>
   </main>
 </template>
