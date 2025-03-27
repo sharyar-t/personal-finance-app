@@ -3,6 +3,7 @@ import OverviewCard from '@/components/overview/OverviewCard.vue'
 import PotsCard from '@/components/overview/PotsCard.vue'
 import TransactionsCard from '@/components/overview/TransactionsCard.vue'
 import BudgetsCard from '@/components/overview/BudgetsCard.vue'
+import RecurringBillsCard from '@/components/overview/RecurringBillsCard.vue'
 </script>
 
 <template>
@@ -23,6 +24,7 @@ import BudgetsCard from '@/components/overview/BudgetsCard.vue'
       </div>
       <div class="flex basis-2/5 flex-col gap-3 md:gap-6">
         <BudgetsCard />
+        <RecurringBillsCard />
       </div>
     </div>
   </main>
