@@ -1,7 +1,24 @@
 <script setup lang="ts">
+import { shallowRef } from 'vue'
+import {
+  createColumnHelper,
+  FlexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useVueTable,
+} from '@tanstack/vue-table'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { PhFunnel, PhMagnifyingGlass, PhSortAscending } from '@phosphor-icons/vue'
+import {
+  PhCaretLeft,
+  PhCaretRight,
+  PhFunnel,
+  PhMagnifyingGlass,
+  PhSortAscending,
+} from '@phosphor-icons/vue'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -21,6 +38,86 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer'
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import { transactions } from '@/data.json'
+import type { Transaction } from '@/types.ts'
+
+const data = shallowRef<Transaction[]>(transactions)
+const columnHelper = createColumnHelper<Transaction>()
+const columns = [
+  columnHelper.accessor('name', {
+    header: 'Recipient / Sender',
+    cell: ({ row }) => {
+      const { name, avatar } = row.original
+
+      return h('div', { class: 'flex items-center gap-4' }, [
+        h('img', { src: avatar, alt: name, class: 'w-[40px] h-[40px] rounded-full' }),
+        h('div', { class: 'text-grey-900 text-preset-4-bold' }, name),
+      ])
+    },
+  }),
+  {
+    accessorKey: 'category',
+    header: 'Category',
+  },
+  columnHelper.accessor('date', {
+    header: 'Transaction Date',
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('date'))
+      const formatted = new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }).format(date)
+      return h('div', {}, formatted)
+    },
+  }),
+  columnHelper.accessor('amount', {
+    header: () => h('div', { class: 'text-right' }, 'Amount'),
+    cell: ({ row }) => {
+      const amount = Number.parseFloat(row.getValue('amount'))
+
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(amount)
+
+      return h(
+        'div',
+        { class: `text-right font-medium ${amount > 0 ? 'text-green' : ''}` },
+        formatted,
+      )
+    },
+  }),
+]
+
+const search = ref('')
+const sortBy = ref('latest')
+const filterBy = ref('all')
+
+const table = useVueTable({
+  data: data.value,
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getExpandedRowModel: getExpandedRowModel(),
+  state: {
+    get globalFilter() {
+      return search.value
+    },
+  },
+})
 </script>
 
 <template>
@@ -36,6 +133,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
               type="text"
               placeholder="Search..."
               class="border-beige-500 pr-10 shadow-none"
+              v-model="search"
             />
             <span class="absolute inset-y-0 end-0 flex items-center justify-center px-2">
               <PhMagnifyingGlass class="size-6 text-muted-foreground" />
@@ -52,7 +150,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
                 <DrawerHeader>
                   <DrawerTitle>Sort by</DrawerTitle>
                 </DrawerHeader>
-                <Command class="bg-transparent">
+                <Command>
                   <CommandList>
                     <CommandGroup>
                       <CommandItem value="latest">Latest</CommandItem>
@@ -82,7 +180,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
                 <DrawerHeader>
                   <DrawerTitle>Sort by</DrawerTitle>
                 </DrawerHeader>
-                <Command class="bg-transparent">
+                <Command>
                   <CommandList>
                     <CommandGroup>
                       <CommandItem value="all">All Transactions</CommandItem>
@@ -105,7 +203,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
             </Drawer>
           </div>
           <div class="hidden md:flex md:gap-2">
-            <Select>
+            <Select v-model="sortBy">
               <SelectTrigger class="shadow-none">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -120,7 +218,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Select>
+            <Select v-model="filterBy">
               <SelectTrigger class="shadow-none">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
@@ -138,7 +236,71 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
             </Select>
           </div>
         </div>
-        [Table]
+        <Table>
+          <TableHeader>
+            <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+              <TableHead
+                v-for="header in headerGroup.headers"
+                :key="header.id"
+                class="text-preset-5 font-normal text-grey-500"
+              >
+                <FlexRender
+                  v-if="!header.isPlaceholder"
+                  :render="header.column.columnDef.header"
+                  :props="header.getContext()"
+                />
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <template v-if="table.getRowModel().rows.length">
+              <TableRow v-for="row in table.getRowModel().rows" :key="row.id">
+                <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+                  <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                </TableCell>
+              </TableRow>
+            </template>
+            <TableRow v-else>
+              <TableCell :colspan="columns.length" class="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        <div class="flex items-center justify-between space-x-2 py-4">
+          <Button
+            variant="outline"
+            :disabled="!table.getCanPreviousPage()"
+            @click="table.previousPage()"
+            class="text-grey-900 shadow-none"
+          >
+            <PhCaretLeft weight="fill" class="mr-2 text-grey-500" />
+            <span class="text-preset-4">Previous</span>
+          </Button>
+          <div class="flex gap-2">
+            <Button
+              v-for="i in table.getPageCount()"
+              :key="i"
+              :variant="i === table.getState().pagination.pageIndex + 1 ? 'default' : 'outline'"
+              class="border-beige-500 shadow-none"
+              :class="{
+                'border-none': i === table.getState().pagination.pageIndex + 1,
+              }"
+              @click="table.setPageIndex(i - 1)"
+            >
+              {{ i }}
+            </Button>
+          </div>
+          <Button
+            variant="outline"
+            :disabled="!table.getCanNextPage()"
+            @click="table.nextPage()"
+            class="text-grey-900 shadow-none"
+          >
+            <span class="text-preset-4">Next</span>
+            <PhCaretRight weight="fill" class="ml-2 text-grey-500" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   </main>

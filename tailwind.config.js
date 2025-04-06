@@ -58,6 +58,7 @@ export default {
         yellow: '#F2CDAC',
         beige: {
           100: '#F8F4F0',
+          500: '#98908B',
         },
         grey: {
           500: '#696868',
